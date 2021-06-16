@@ -1,10 +1,5 @@
 'use strict';
 
-console.log( `App is Running` );
-
-// JSX == Javascript HTML 
-// JSX is just like how Sass is a language extension for CSS
-
 const app = {
     title: 'Binary App',
     subtitle: 'Making Binary Decisions for Indecisive People just like You',
@@ -23,6 +18,7 @@ const app = {
 const onFormSubmit = ( e ) =>
 // the 'e' object contains various information about the events 
 {
+    console.log( "Hello" );
     // When you submit a form, React will load the whole page and change the URL address to take you to that form.
     // To prevent that from happening, you can use preventDefault() function 
     e.preventDefault();
@@ -45,37 +41,82 @@ const makeDecision = () =>
     alert( app.options[ randomNum ] );
 };
 
-// var template = React.createElement( "p", { id: "firstP" }, "This is JSX from app.js ! " );   // All JSX needs to be stored as JS variables
-// p is the paragraph tag // all classes and ID's are stored in the second place // The actual content comes in last  
+class Header extends React.Component
+{
+    render ()
+    {
+        let header = (
+            <div>
+                <h1>{ app.title } </h1>
+                { app.subtitle && <p>{ app.subtitle }</p> }
+            </div> );
+        return header;
+    }
+}   // This is a react component 
 
-const appRoot = document.getElementById( 'app' );     // All DOM stuff needs to be stored as JS variables
+class Action extends React.Component
+{
+    render ()
+    {
+        let action = (
+            <div>
+                { app.options.length > 1 ? (
+                    <button className="btn btn-success" style={ { marginLeft: "10px", marginBottom: "15px" } } onClick={ makeDecision }>What Should I do ?</button>
+                ) : <p></p> }
+                { app.options.length > 0 ? (
+                    <button className="btn btn-danger" style={ { marginLeft: "10px", marginBottom: "15px" } } onClick={ deleteOptions }>Remove All Options</button>
+                ) : <p></p> }
+            </div> );
+        return action;
+    }
+}
+
+class Options extends React.Component
+{
+    render ()
+    {
+        let options = (
+            <div>
+                { app.options && app.options.length > 0 ? (
+                    <div>
+                        <p>Here are the Options </p>
+                        <ol>{ app.display() }</ol>
+                    </div>
+                ) : <p>No Options</p> }
+            </div>
+        );
+        return options;
+    }
+}
+
+class AddOptions extends React.Component
+{
+    render ()
+    {
+        let addOptions = (
+            <div>
+                <form onSubmit={ onFormSubmit }>
+                    <input type="text" name="options" placeholder="Task"></input>
+                    <button className="options-btn btn-primary" style={ { marginLeft: "5px" } }>Add Options</button>
+                </form>
+            </div>
+        );
+        return addOptions;
+    }
+}
 
 const reload = () =>
 {
-    // All the HTML needs to be inside this template variable.
-    const template = (
-        <div style={ { marginLeft: "25px" } }>
-            <h2>{ app.title } </h2>
-            { app.subtitle && <p>{ app.subtitle }</p> }
-            { app.options.length > 0 ? (
-                <button className="btn btn-success" style={ { marginLeft: "10px", marginBottom: "15px" } } onClick={ makeDecision }>What Should I do ?</button>
-            ) : <p></p> }
-            <button className="btn btn-danger" style={ { marginLeft: "10px", marginBottom: "15px" } } onClick={ deleteOptions }>Remove All Options</button>
-            { app.options && app.options.length > 0 ? (
-                <div>
-                    <p>Here are the Options </p>
-                    <ol>{ app.display() }</ol>
-                </div>
-            ) : <p>No Options</p> }
-            <form onSubmit={ onFormSubmit }>
-                <input type="text" name="options" placeholder="Task"></input>
-                <button className="options-btn btn-primary" style={ { marginLeft: "5px" } }>Add Options</button>
-            </form>
+    const jsx = (
+        <div>
+            <Header />
+            <Action />
+            <Options />
+            <AddOptions />
         </div>
-    );
-    // All the event handlers like - onClick, onSubmit are available on React Docs 
+    ); // <Header/> is how u render or call a react component 
 
-    ReactDOM.render( template, appRoot );   // Rendering(displaying) this to the screen 
+    ReactDOM.render( jsx, document.getElementById( 'app' ) );
 };
 
 reload();
