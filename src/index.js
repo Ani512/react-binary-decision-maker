@@ -1,73 +1,109 @@
 'use strict';
 
-const app = {
-    title: 'Binary App',
-    subtitle: 'Making Binary Decisions for Indecisive People just like You',
-    options: [],
-    display ()
+// Class Based COMPONENTS //
+
+class IndecisionApp extends React.Component
+{
+    constructor ( props )
     {
-        let arr = [];
-        for ( let pos of this.options )
-        {
-            arr.push( <li key={ this.options.indexOf( pos ) }>{ pos }</li> );
-        }
-        return arr;
+        super( props );
+        this.handleDeleteOptions = this.handleDeleteOptions.bind( this );
+        this.handleAddOption = this.handleAddOption.bind( this );
+        this.state = {
+            options: [],
+        };
     }
-};
-
-const onFormSubmit = ( e ) =>
-// the 'e' object contains various information about the events 
-{
-    console.log( "Hello" );
-    // When you submit a form, React will load the whole page and change the URL address to take you to that form.
-    // To prevent that from happening, you can use preventDefault() function 
-    e.preventDefault();
-    // console.log( 'Form Submitted' );
-    const option = e.target.elements.options.value;
-    if ( option ) app.options.push( option );
-    e.target.elements.options.value = '';
-    reload();
-};
-
-const deleteOptions = () =>
-{
-    app.options = [];
-    reload();
-};
-
-const makeDecision = () =>
-{
-    const randomNum = Math.floor( Math.random() * app.options.length );
-    alert( app.options[ randomNum ] );
-};
+    // You can either define the function of another class here or inside that function 
+    handleDeleteOptions ()
+    {
+        this.setState( () =>
+        {
+            return {
+                options: [],
+            };
+        } );
+    }
+    handleAddOption ( option )
+    {
+        if ( !option )
+        {
+            return 'Please enter a Valid Option';
+        } else if ( this.state.options.indexOf( option ) > -1 )
+        {
+            return 'Option Already Exists';
+        }
+        this.setState( ( prevState ) =>
+        {
+            return {
+                options: prevState.options.concat( [ option ] )
+            };
+        } );
+    }
+    render ()
+    {
+        return (
+            <div>
+                <Header title="Binary Decision Maker" subtitle='Making Decisions for Indecisive People' />
+                <Action hasOptions={ this.state.options.length > 0 ? true : false } options={ this.state.options } />
+                <Options hasOptions={ this.state.options.length > 0 ? true : false } options={ this.state.options } handleDeleteOptions={ this.handleDeleteOptions } />
+                <AddOptions options={ this.state.options } handleAddOption={ this.handleAddOption } />
+            </div>
+        );
+    }
+}
 
 class Header extends React.Component
 {
     render ()
     {
-        let header = (
+        return (
             <div>
-                <h1>{ app.title } </h1>
-                { app.subtitle && <p>{ app.subtitle }</p> }
+                <h1 style={ { display: "block", textAlign: "center", color: "green", marginBottom: "10px", padding: "10px", borderBottom: "5px solid green" } }>{ this.props.title } </h1>
+                { this.props.subtitle && <h3 style={ { marginLeft: "10px" } }>{ this.props.subtitle }</h3> }
             </div> );
-        return header;
     }
 }   // This is a react component 
 
 class Action extends React.Component
 {
+    constructor ( props )
+    {
+        super( props );
+        this.handlePick = this.handlePick.bind( this );
+        this.state = {
+            answer: ''
+        };
+    }
+    handlePick ()
+    {
+        this.setState( () =>
+        {
+            let ans = this.props.options[ Math.floor( Math.random() * this.props.options.length ) ];
+            return {
+                answer: ans
+            };
+        } );
+    }
+
     render ()
     {
-        let action = (
+        return (
             <div>
-                { app.options.length > 1 ? (
-                    <button className="btn btn-success" style={ { marginLeft: "10px", marginBottom: "15px" } } onClick={ makeDecision }>What Should I do ?</button>
-                ) : <p></p> }
-                { app.options.length > 0 ? (
-                    <button className="btn btn-danger" style={ { marginLeft: "10px", marginBottom: "15px" } } onClick={ deleteOptions }>Remove All Options</button>
-                ) : <p></p> }
+                {
+                    this.props.hasOptions ?
+                        ( <div style={ { textAlign: "center" } }>
+                            <button className="btn btn-success" style={ { marginBottom: "10px", marginTop: "10px" } } onClick={ this.handlePick }>What Should I do ?</button>
+                        </div> )
+                        : <p></p>
+                }
+                {
+                    this.state.answer ?
+                        ( <div style={ { display: "flex", justifyContent: "center", margin: "10px" } }>
+                            <p style={ { border: "5px outset rgb(52,16,132)", width: "auto", textAlign: "center", padding: "10px" } }>Option:  <span style={ { color: "blue", fontWeight: "500", fontSize: "30px" } }>{ this.state.answer }</span></p>
+                        </div> )
+                        : <p></p>
+                }
             </div> );
-        return action;
     }
 }
 
@@ -75,48 +111,80 @@ class Options extends React.Component
 {
     render ()
     {
-        let options = (
-            <div>
-                { app.options && app.options.length > 0 ? (
-                    <div>
-                        <p>Here are the Options </p>
-                        <ol>{ app.display() }</ol>
-                    </div>
-                ) : <p>No Options</p> }
+        return (
+            <div style={ { display: "grid" } }>
+                { this.props.hasOptions ?
+                    <button className="btn btn-danger" style={ { textAlign: "center", marginBottom: "15px" } } onClick={ this.props.handleDeleteOptions }>Remove All Options</button>
+                    : <p></p>
+                }
+                {
+                    this.props.options && this.props.options.length > 0 ? (
+                        <div>
+                            <p style={ { textAlign: "center", fontWeight: "500" } }>Here are the Options - </p>
+                            { this.props.options.map( option => <Option key={ option } optionText={ option } /> ) }
+                        </div>
+                    ) : <p style={ { border: "5px solid red", justifySelf: "center", width: "200px", textAlign: "center" } }>Add Options to Begin</p>
+                }
             </div>
         );
-        return options;
+    }
+}
+
+class Option extends React.Component
+{
+    // The single 
+    render ()
+    {
+        return (
+            <div>
+                <p style={ { textAlign: "center" } }>{ this.props.optionText }</p>
+            </div>
+        );
     }
 }
 
 class AddOptions extends React.Component
 {
+    constructor ( props )
+    {
+        super( props );
+        this.handleAddOption = this.handleAddOption.bind( this );
+        this.resetForm = this.resetForm.bind( this );
+        this.state = {
+            error: undefined
+        };
+    }
+    handleAddOption ( e )
+    {
+        e.preventDefault();
+        let option = e.target.elements.options.value.trim();
+        let error = this.props.handleAddOption( option );
+        this.resetForm();
+        this.setState( () =>
+        {
+            return {
+                error: error
+            };
+        } );
+    }
+    resetForm ()
+    {
+        document.getElementById( "inp" ).reset();
+    }
     render ()
     {
-        let addOptions = (
+        return (
             <div>
-                <form onSubmit={ onFormSubmit }>
+                { this.state.error && <p style={ { textAlign: "center" } }>{ this.state.error }</p> }
+                <form id="inp" onSubmit={ this.handleAddOption } style={ { display: "block", textAlign: "center", marginBottom: "30px" } }>
                     <input type="text" name="options" placeholder="Task"></input>
                     <button className="options-btn btn-primary" style={ { marginLeft: "5px" } }>Add Options</button>
                 </form>
             </div>
         );
-        return addOptions;
     }
 }
 
-const reload = () =>
-{
-    const jsx = (
-        <div>
-            <Header />
-            <Action />
-            <Options />
-            <AddOptions />
-        </div>
-    ); // <Header/> is how u render or call a react component 
+ReactDOM.render( <IndecisionApp />, document.getElementById( 'app' ) );
 
-    ReactDOM.render( jsx, document.getElementById( 'app' ) );
-};
-
-reload();
+// <span style={{color: "blue", fontWeight: "500", fontSize: "large"}}> </span>
