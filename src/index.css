@@ -1,0 +1,97 @@
+:root {
+    --header: #563D7C;
+}
+
+body {
+    background: #DCDCDC;
+}
+
+.header h1 {
+    display: block; 
+    text-align: center; 
+    color: var(--header); 
+    margin-bottom: 10px; 
+    padding: 10px; 
+    border-bottom: 5px solid var(--header);
+}
+
+.header h3 {
+    margin-left: 10px;
+}
+
+.action-q {
+    text-align: center;
+}
+
+.action-q button {
+    margin-bottom: 5px; 
+    margin-top: 10px;
+}
+
+.action-a {
+    display: flex; 
+    justify-content: center; 
+    margin: 10px;
+}
+
+.action-a p {
+    border: 5px outset rgb(52,16,132); 
+    width: auto; 
+    text-align: center; 
+    padding: 10px;
+}
+
+.action-a p span {
+    color: blue; 
+    font-weight: 500; 
+    font-size: 30px;
+}
+
+.options {
+    display: grid;
+}
+
+.options button {
+    text-align: center; 
+    margin-bottom: 15px;
+}
+
+.info {
+    border: 5px solid var(--header); 
+    justify-self: center; 
+    width: 200px; 
+    text-align: center;
+}
+
+.sen p {
+    text-align: center;
+    font-weight: 500;
+}
+
+.single-option {
+    text-align: center;
+}
+
+.inner {
+    display: inline-block;
+}
+
+.btn-inner {
+    margin-left: 5px;
+    border-radius: 50%;
+}
+
+.display-option p {
+    text-align: center;
+}
+
+.display-option form {
+     display: block; 
+     text-align: center; 
+     margin-bottom: 30px;
+}
+
+.display-option form button {
+   margin-left: 5px; 
+}
+

@@ -1,8 +1,7 @@
 'use strict';
-
 // Class Based COMPONENTS //
 
-// STATEFUL 
+// STATEFUL Component 
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -21,6 +20,7 @@ var IndecisionApp = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (IndecisionApp.__proto__ || Object.getPrototypeOf(IndecisionApp)).call(this, props));
 
         _this.handleDeleteOptions = _this.handleDeleteOptions.bind(_this);
+        _this.handleDeleteSingleOption = _this.handleDeleteSingleOption.bind(_this);
         _this.handleAddOption = _this.handleAddOption.bind(_this);
         _this.handlePick = _this.handlePick.bind(_this);
         _this.state = {
@@ -48,10 +48,16 @@ var IndecisionApp = function (_React$Component) {
         key: 'handleDeleteOptions',
         value: function handleDeleteOptions() {
             this.setState(function () {
-                return {
-                    options: [],
-                    answer: ''
-                };
+                return { options: [], answer: '' };
+            });
+        }
+    }, {
+        key: 'handleDeleteSingleOption',
+        value: function handleDeleteSingleOption(option) {
+            this.setState(function (prevState) {
+                return { options: prevState.options.filter(function (element) {
+                        return element !== option;
+                    }) };
             });
         }
     }, {
@@ -63,9 +69,7 @@ var IndecisionApp = function (_React$Component) {
                 return 'Option Already Exists';
             }
             this.setState(function (prevState) {
-                return {
-                    options: prevState.options.concat([option])
-                };
+                return { options: prevState.options.concat([option]) };
             });
         }
     }, {
@@ -75,9 +79,20 @@ var IndecisionApp = function (_React$Component) {
                 'div',
                 null,
                 React.createElement(Header, null),
-                React.createElement(Action, { hasOptions: this.state.options.length > 0 ? true : false, answer: this.state.answer, handlePick: this.handlePick }),
-                React.createElement(Options, { hasOptions: this.state.options.length > 0 ? true : false, options: this.state.options, handleDeleteOptions: this.handleDeleteOptions }),
-                React.createElement(AddOptions, { options: this.state.options, handleAddOption: this.handleAddOption })
+                React.createElement(Action, {
+                    hasOptions: this.state.options.length > 0 ? true : false,
+                    answer: this.state.answer, handlePick: this.handlePick
+                }),
+                React.createElement(Options, {
+                    hasOptions: this.state.options.length > 0 ? true : false,
+                    options: this.state.options,
+                    handleDeleteOptions: this.handleDeleteOptions,
+                    handleDeleteSingleOption: this.handleDeleteSingleOption
+                }),
+                React.createElement(AddOptions, {
+                    options: this.state.options,
+                    handleAddOption: this.handleAddOption
+                })
             );
         }
     }]);
@@ -91,16 +106,16 @@ var IndecisionApp = function (_React$Component) {
 var Header = function Header(props) {
     return React.createElement(
         'div',
-        null,
+        { className: 'header' },
         React.createElement(
             'h1',
-            { style: { display: "block", textAlign: "center", color: "green", marginBottom: "10px", padding: "10px", borderBottom: "5px solid green" } },
+            null,
             props.title,
             ' '
         ),
         props.subtitle && React.createElement(
             'h3',
-            { style: { marginLeft: "10px" } },
+            null,
             props.subtitle
         )
     );
@@ -119,23 +134,23 @@ var Action = function Action(props) {
         null,
         props.hasOptions ? React.createElement(
             'div',
-            { style: { textAlign: "center" } },
+            { className: 'action-q' },
             React.createElement(
                 'button',
-                { className: 'btn btn-success', style: { marginBottom: "10px", marginTop: "10px" }, onClick: props.handlePick },
+                { className: 'btn btn-success', onClick: props.handlePick },
                 'What Should I do ?'
             )
         ) : React.createElement('p', null),
         props.answer ? React.createElement(
             'div',
-            { style: { display: "flex", justifyContent: "center", margin: "10px" } },
+            { className: 'action-a' },
             React.createElement(
                 'p',
-                { style: { border: "5px outset rgb(52,16,132)", width: "auto", textAlign: "center", padding: "10px" } },
-                'Option:  ',
+                null,
+                'Option: ',
                 React.createElement(
                     'span',
-                    { style: { color: "blue", fontWeight: "500", fontSize: "30px" } },
+                    null,
                     props.answer
                 )
             )
@@ -147,28 +162,32 @@ var Action = function Action(props) {
 var Options = function Options(props) {
     return React.createElement(
         'div',
-        { style: { display: "grid" } },
+        { className: 'options' },
         props.hasOptions ? React.createElement(
             'button',
-            { className: 'btn btn-danger', style: { textAlign: "center", marginBottom: "15px" }, onClick: props.handleDeleteOptions },
+            { className: 'btn btn-danger', onClick: props.handleDeleteOptions },
             'Remove All Options'
         ) : React.createElement('p', null),
 
         /*  Calling the Option Component with each option */
         props.options && props.options.length > 0 ? React.createElement(
             'div',
-            null,
+            { className: 'sen' },
             React.createElement(
                 'p',
-                { style: { textAlign: "center", fontWeight: "500" } },
+                null,
                 'Here are the Options - '
             ),
             props.options.map(function (option) {
-                return React.createElement(Option, { key: option, optionText: option });
+                return React.createElement(Option, {
+                    key: option,
+                    optionText: option,
+                    handleDeleteSingleOption: props.handleDeleteSingleOption
+                });
             })
         ) : React.createElement(
             'p',
-            { style: { border: "5px solid red", justifySelf: "center", width: "200px", textAlign: "center" } },
+            { 'class': 'info' },
             'Add Options to Begin'
         )
     );
@@ -178,11 +197,18 @@ var Options = function Options(props) {
 var Option = function Option(props) {
     return React.createElement(
         'div',
-        null,
+        { className: 'single-option' },
         React.createElement(
             'p',
-            { style: { textAlign: "center" } },
+            { className: 'inner' },
             props.optionText
+        ),
+        React.createElement(
+            'button',
+            { className: 'inner btn-inner btn-danger', onClick: function onClick() {
+                    props.handleDeleteSingleOption(props.optionText);
+                } },
+            'X'
         )
     );
 };
@@ -213,9 +239,7 @@ var AddOptions = function (_React$Component2) {
             var error = this.props.handleAddOption(option);
             this.resetForm();
             this.setState(function () {
-                return {
-                    error: error
-                };
+                return { error: error };
             });
         }
     }, {
@@ -228,19 +252,19 @@ var AddOptions = function (_React$Component2) {
         value: function render() {
             return React.createElement(
                 'div',
-                null,
+                { className: 'display-option' },
                 this.state.error && React.createElement(
                     'p',
-                    { style: { textAlign: "center" } },
+                    null,
                     this.state.error
                 ),
                 React.createElement(
                     'form',
-                    { id: 'inp', onSubmit: this.handleAddOption, style: { display: "block", textAlign: "center", marginBottom: "30px" } },
+                    { id: 'inp', onSubmit: this.handleAddOption },
                     React.createElement('input', { type: 'text', name: 'options', placeholder: 'Task' }),
                     React.createElement(
                         'button',
-                        { className: 'options-btn btn-primary', style: { marginLeft: "5px" } },
+                        { className: 'options-btn btn-primary' },
                         'Add Options'
                     )
                 )

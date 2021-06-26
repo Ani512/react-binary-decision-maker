@@ -1,14 +1,14 @@
 'use strict';
-
 // Class Based COMPONENTS //
 
-// STATEFUL 
+// STATEFUL Component 
 class IndecisionApp extends React.Component
 {
     constructor ( props )
     {
         super( props );
         this.handleDeleteOptions = this.handleDeleteOptions.bind( this );
+        this.handleDeleteSingleOption = this.handleDeleteSingleOption.bind( this );
         this.handleAddOption = this.handleAddOption.bind( this );
         this.handlePick = this.handlePick.bind( this );
         this.state = {
@@ -29,13 +29,11 @@ class IndecisionApp extends React.Component
     }
     handleDeleteOptions ()
     {
-        this.setState( () =>
-        {
-            return {
-                options: [],
-                answer: ''
-            };
-        } );
+        this.setState( () => ( { options: [], answer: '' } ) );
+    }
+    handleDeleteSingleOption ( option )
+    {
+        this.setState( ( prevState ) => ( { options: prevState.options.filter( ( element ) => element !== option ) } ) );
     }
     handleAddOption ( option )
     {
@@ -46,21 +44,27 @@ class IndecisionApp extends React.Component
         {
             return 'Option Already Exists';
         }
-        this.setState( ( prevState ) =>
-        {
-            return {
-                options: prevState.options.concat( [ option ] )
-            };
-        } );
+        this.setState( ( prevState ) => ( { options: prevState.options.concat( [ option ] ) } ) );
     }
     render ()
     {
         return (
             <div>
                 <Header />
-                <Action hasOptions={ this.state.options.length > 0 ? true : false } answer={ this.state.answer } handlePick={ this.handlePick } />
-                <Options hasOptions={ this.state.options.length > 0 ? true : false } options={ this.state.options } handleDeleteOptions={ this.handleDeleteOptions } />
-                <AddOptions options={ this.state.options } handleAddOption={ this.handleAddOption } />
+                <Action
+                    hasOptions={ this.state.options.length > 0 ? true : false }
+                    answer={ this.state.answer } handlePick={ this.handlePick }
+                />
+                <Options
+                    hasOptions={ this.state.options.length > 0 ? true : false }
+                    options={ this.state.options }
+                    handleDeleteOptions={ this.handleDeleteOptions }
+                    handleDeleteSingleOption={ this.handleDeleteSingleOption }
+                />
+                <AddOptions
+                    options={ this.state.options }
+                    handleAddOption={ this.handleAddOption }
+                />
             </div>
         );
     }
@@ -70,9 +74,9 @@ class IndecisionApp extends React.Component
 const Header = ( props ) =>
 {
     return (
-        <div>
-            <h1 style={ { display: "block", textAlign: "center", color: "green", marginBottom: "10px", padding: "10px", borderBottom: "5px solid green" } }>{ props.title } </h1>
-            { props.subtitle && <h3 style={ { marginLeft: "10px" } }>{ props.subtitle }</h3> }
+        <div className="header">
+            <h1>{ props.title } </h1>
+            { props.subtitle && <h3>{ props.subtitle }</h3> }
         </div> );
 };
 
@@ -89,15 +93,15 @@ const Action = ( props ) =>
         <div>
             {
                 props.hasOptions ?
-                    ( <div style={ { textAlign: "center" } }>
-                        <button className="btn btn-success" style={ { marginBottom: "10px", marginTop: "10px" } } onClick={ props.handlePick }>What Should I do ?</button>
+                    ( <div className="action-q">
+                        <button className="btn btn-success" onClick={ props.handlePick }>What Should I do ?</button>
                     </div> )
                     : <p></p>
             }
             {
                 props.answer ?
-                    ( <div style={ { display: "flex", justifyContent: "center", margin: "10px" } }>
-                        <p style={ { border: "5px outset rgb(52,16,132)", width: "auto", textAlign: "center", padding: "10px" } }>Option:  <span style={ { color: "blue", fontWeight: "500", fontSize: "30px" } }>{ props.answer }</span></p>
+                    ( <div className="action-a">
+                        <p>Option: <span>{ props.answer }</span></p>
                     </div> )
                     : <p></p>
             }
@@ -108,19 +112,24 @@ const Action = ( props ) =>
 const Options = ( props ) =>
 {
     return (
-        <div style={ { display: "grid" } }>
+        <div className="options">
             { props.hasOptions ?
-                <button className="btn btn-danger" style={ { textAlign: "center", marginBottom: "15px" } } onClick={ props.handleDeleteOptions }>Remove All Options</button>
+                <button className="btn btn-danger" onClick={ props.handleDeleteOptions }>Remove All Options</button>
                 : <p></p>
             }
             {
                 /*  Calling the Option Component with each option */
                 props.options && props.options.length > 0 ? (
-                    <div>
-                        <p style={ { textAlign: "center", fontWeight: "500" } }>Here are the Options - </p>
-                        { props.options.map( option => <Option key={ option } optionText={ option } /> ) }
+                    <div className="sen">
+                        <p>Here are the Options - </p>
+                        { props.options.map( option => (
+                            <Option
+                                key={ option }
+                                optionText={ option }
+                                handleDeleteSingleOption={ props.handleDeleteSingleOption }
+                            /> ) ) }
                     </div>
-                ) : <p style={ { border: "5px solid red", justifySelf: "center", width: "200px", textAlign: "center" } }>Add Options to Begin</p>
+                ) : <p class="info">Add Options to Begin</p>
             }
         </div>
     );
@@ -130,8 +139,12 @@ const Options = ( props ) =>
 const Option = ( props ) =>
 {
     return (
-        <div>
-            <p style={ { textAlign: "center" } }>{ props.optionText }</p>
+        <div className="single-option">
+            <p className="inner">{ props.optionText }</p>
+            <button className="inner btn-inner btn-danger" onClick={ () =>
+            {
+                props.handleDeleteSingleOption( props.optionText );
+            } }>X</button>
         </div>
     );
 };
@@ -154,12 +167,7 @@ class AddOptions extends React.Component
         let option = e.target.elements.options.value.trim();
         let error = this.props.handleAddOption( option );
         this.resetForm();
-        this.setState( () =>
-        {
-            return {
-                error: error
-            };
-        } );
+        this.setState( () => ( { error: error } ) );
     }
     resetForm ()
     {
@@ -168,11 +176,11 @@ class AddOptions extends React.Component
     render ()
     {
         return (
-            <div>
-                { this.state.error && <p style={ { textAlign: "center" } }>{ this.state.error }</p> }
-                <form id="inp" onSubmit={ this.handleAddOption } style={ { display: "block", textAlign: "center", marginBottom: "30px" } }>
+            <div className="display-option">
+                { this.state.error && <p>{ this.state.error }</p> }
+                <form id="inp" onSubmit={ this.handleAddOption }>
                     <input type="text" name="options" placeholder="Task"></input>
-                    <button className="options-btn btn-primary" style={ { marginLeft: "5px" } }>Add Options</button>
+                    <button className="options-btn btn-primary">Add Options</button>
                 </form>
             </div>
         );
