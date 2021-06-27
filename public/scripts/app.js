@@ -1,7 +1,6 @@
 'use strict';
-// Class Based COMPONENTS //
 
-// STATEFUL Component 
+// STATEFUL Component // Class Based COMPONENT //
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -29,20 +28,31 @@ var IndecisionApp = function (_React$Component) {
         };
         return _this;
     }
-    // You can either define the function of another class here or inside that function 
-
 
     _createClass(IndecisionApp, [{
-        key: 'handlePick',
-        value: function handlePick() {
-            var _this2 = this;
-
-            this.setState(function () {
-                var ans = _this2.state.options[Math.floor(Math.random() * _this2.state.options.length)];
-                return {
-                    answer: ans
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            try {
+                var json = localStorage.getItem('options');
+                var options = JSON.parse(json);
+                if (options) {
+                    this.setState(function () {
+                        return { options: options };
+                    });
+                }
+            } catch (error) {
+                // Do Nothing 
+            }
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevProps, prevState) {
+            if (prevState.options.length !== this.state.options.length)
+                // If the array updates then, the array is stored in the local storage as JSON 
+                {
+                    var json = JSON.stringify(this.state.options);
+                    localStorage.setItem('options', json);
                 };
-            });
         }
     }, {
         key: 'handleDeleteOptions',
@@ -57,7 +67,7 @@ var IndecisionApp = function (_React$Component) {
             this.setState(function (prevState) {
                 return { options: prevState.options.filter(function (element) {
                         return element !== option;
-                    }) };
+                    }), answer: '' };
             });
         }
     }, {
@@ -73,12 +83,27 @@ var IndecisionApp = function (_React$Component) {
             });
         }
     }, {
+        key: 'handlePick',
+        value: function handlePick() {
+            var _this2 = this;
+
+            this.setState(function () {
+                var ans = _this2.state.options[Math.floor(Math.random() * _this2.state.options.length)];
+                return {
+                    answer: ans
+                };
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
             return React.createElement(
                 'div',
                 null,
-                React.createElement(Header, null),
+                React.createElement(Header, {
+                    title: 'Binary Decision Maker',
+                    subtitle: 'Making Decisions for Indecisive People'
+                }),
                 React.createElement(Action, {
                     hasOptions: this.state.options.length > 0 ? true : false,
                     answer: this.state.answer, handlePick: this.handlePick
@@ -121,12 +146,6 @@ var Header = function Header(props) {
     );
 };
 
-// Using Default Props 
-Header.defaultProps = {
-    title: 'Binary Decision Maker',
-    subtitle: 'Making Decisions for Indecisive People'
-};
-
 // STATELESS
 var Action = function Action(props) {
     return React.createElement(
@@ -137,7 +156,7 @@ var Action = function Action(props) {
             { className: 'action-q' },
             React.createElement(
                 'button',
-                { className: 'btn btn-success', onClick: props.handlePick },
+                { className: 'btn', onClick: props.handlePick },
                 'What Should I do ?'
             )
         ) : React.createElement('p', null),
@@ -165,7 +184,7 @@ var Options = function Options(props) {
         { className: 'options' },
         props.hasOptions ? React.createElement(
             'button',
-            { className: 'btn btn-danger', onClick: props.handleDeleteOptions },
+            { className: 'btn', onClick: props.handleDeleteOptions },
             'Remove All Options'
         ) : React.createElement('p', null),
 
@@ -187,7 +206,7 @@ var Options = function Options(props) {
             })
         ) : React.createElement(
             'p',
-            { 'class': 'info' },
+            { className: 'info' },
             'Add Options to Begin'
         )
     );
@@ -205,7 +224,7 @@ var Option = function Option(props) {
         ),
         React.createElement(
             'button',
-            { className: 'inner btn-inner btn-danger', onClick: function onClick() {
+            { className: 'btn-inner', onClick: function onClick() {
                     props.handleDeleteSingleOption(props.optionText);
                 } },
             'X'
@@ -213,7 +232,7 @@ var Option = function Option(props) {
     );
 };
 
-// STATE
+// STATEFUL // Class Based COMPONENT //
 
 var AddOptions = function (_React$Component2) {
     _inherits(AddOptions, _React$Component2);
@@ -264,7 +283,7 @@ var AddOptions = function (_React$Component2) {
                     React.createElement('input', { type: 'text', name: 'options', placeholder: 'Task' }),
                     React.createElement(
                         'button',
-                        { className: 'options-btn btn-primary' },
+                        { className: 'options-btn' },
                         'Add Options'
                     )
                 )

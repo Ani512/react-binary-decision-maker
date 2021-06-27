@@ -26,6 +26,13 @@ body {
 .action-q button {
     margin-bottom: 5px; 
     margin-top: 10px;
+    color: white;
+    background: green;
+}
+
+.action-q button:hover {
+    background: purple;
+    cursor: pointer;
 }
 
 .action-a {
@@ -54,6 +61,13 @@ body {
 .options button {
     text-align: center; 
     margin-bottom: 15px;
+    color: white;
+    background-color: #DC3545;
+}
+
+.options button:hover {
+    background-color: darkred;
+    cursor: pointer;
 }
 
 .info {
@@ -93,5 +107,15 @@ body {
 
 .display-option form button {
    margin-left: 5px; 
+}
+
+.options-btn {
+    background-color: var(--header);
+    color: white;
+}
+
+.options-btn:hover {
+    background-color: purple;
+    cursor: pointer;
 }
 

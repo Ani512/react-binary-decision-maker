@@ -1,7 +1,6 @@
 'use strict';
-// Class Based COMPONENTS //
 
-// STATEFUL Component 
+// STATEFUL Component // Class Based COMPONENT //
 class IndecisionApp extends React.Component
 {
     constructor ( props )
@@ -16,16 +15,30 @@ class IndecisionApp extends React.Component
             answer: ''
         };
     }
-    // You can either define the function of another class here or inside that function 
-    handlePick ()
+
+    componentDidMount ()
     {
-        this.setState( () =>
+        try
         {
-            let ans = this.state.options[ Math.floor( Math.random() * this.state.options.length ) ];
-            return {
-                answer: ans
-            };
-        } );
+            let json = localStorage.getItem( 'options' );
+            let options = JSON.parse( json );
+            if ( options )
+            {
+                this.setState( () => ( { options } ) );
+            }
+        } catch ( error )
+        {
+            // Do Nothing 
+        }
+    }
+    componentDidUpdate ( prevProps, prevState )
+    {
+        if ( prevState.options.length !== this.state.options.length )
+        // If the array updates then, the array is stored in the local storage as JSON 
+        {
+            let json = JSON.stringify( this.state.options );
+            localStorage.setItem( 'options', json );
+        };
     }
     handleDeleteOptions ()
     {
@@ -33,7 +46,7 @@ class IndecisionApp extends React.Component
     }
     handleDeleteSingleOption ( option )
     {
-        this.setState( ( prevState ) => ( { options: prevState.options.filter( ( element ) => element !== option ) } ) );
+        this.setState( ( prevState ) => ( { options: prevState.options.filter( ( element ) => element !== option ), answer: '' } ) );
     }
     handleAddOption ( option )
     {
@@ -46,11 +59,24 @@ class IndecisionApp extends React.Component
         }
         this.setState( ( prevState ) => ( { options: prevState.options.concat( [ option ] ) } ) );
     }
+    handlePick ()
+    {
+        this.setState( () =>
+        {
+            let ans = this.state.options[ Math.floor( Math.random() * this.state.options.length ) ];
+            return {
+                answer: ans
+            };
+        } );
+    }
     render ()
     {
         return (
             <div>
-                <Header />
+                <Header
+                    title='Binary Decision Maker'
+                    subtitle='Making Decisions for Indecisive People'
+                />
                 <Action
                     hasOptions={ this.state.options.length > 0 ? true : false }
                     answer={ this.state.answer } handlePick={ this.handlePick }
@@ -80,12 +106,6 @@ const Header = ( props ) =>
         </div> );
 };
 
-// Using Default Props 
-Header.defaultProps = {
-    title: 'Binary Decision Maker',
-    subtitle: 'Making Decisions for Indecisive People'
-};
-
 // STATELESS
 const Action = ( props ) =>
 {
@@ -94,7 +114,7 @@ const Action = ( props ) =>
             {
                 props.hasOptions ?
                     ( <div className="action-q">
-                        <button className="btn btn-success" onClick={ props.handlePick }>What Should I do ?</button>
+                        <button className="btn" onClick={ props.handlePick }>What Should I do ?</button>
                     </div> )
                     : <p></p>
             }
@@ -114,7 +134,7 @@ const Options = ( props ) =>
     return (
         <div className="options">
             { props.hasOptions ?
-                <button className="btn btn-danger" onClick={ props.handleDeleteOptions }>Remove All Options</button>
+                <button className="btn" onClick={ props.handleDeleteOptions }>Remove All Options</button>
                 : <p></p>
             }
             {
@@ -129,7 +149,7 @@ const Options = ( props ) =>
                                 handleDeleteSingleOption={ props.handleDeleteSingleOption }
                             /> ) ) }
                     </div>
-                ) : <p class="info">Add Options to Begin</p>
+                ) : <p className="info">Add Options to Begin</p>
             }
         </div>
     );
@@ -141,7 +161,7 @@ const Option = ( props ) =>
     return (
         <div className="single-option">
             <p className="inner">{ props.optionText }</p>
-            <button className="inner btn-inner btn-danger" onClick={ () =>
+            <button className="btn-inner" onClick={ () =>
             {
                 props.handleDeleteSingleOption( props.optionText );
             } }>X</button>
@@ -149,7 +169,7 @@ const Option = ( props ) =>
     );
 };
 
-// STATE
+// STATEFUL // Class Based COMPONENT //
 class AddOptions extends React.Component
 {
     constructor ( props )
@@ -180,7 +200,7 @@ class AddOptions extends React.Component
                 { this.state.error && <p>{ this.state.error }</p> }
                 <form id="inp" onSubmit={ this.handleAddOption }>
                     <input type="text" name="options" placeholder="Task"></input>
-                    <button className="options-btn btn-primary">Add Options</button>
+                    <button className="options-btn">Add Options</button>
                 </form>
             </div>
         );
