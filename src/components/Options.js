@@ -27,6 +27,6 @@ const Options = ( props ) =>
             }
         </div>
     );
-};
+};// NOT Written as Arrow function so return statement needed 
 
 export default Options;

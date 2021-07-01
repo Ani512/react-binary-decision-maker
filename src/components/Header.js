@@ -9,6 +9,6 @@ const Header = ( props ) =>
             <h1>{ props.title } </h1>
             { props.subtitle && <h3>{ props.subtitle }</h3> }
         </div> );
-};
+}; // Not Written as Arrow function so return statement present
 
 export default Header;

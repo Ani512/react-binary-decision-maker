@@ -4,6 +4,7 @@ import Header from './Header';
 import Action from './Action';
 import Options from './Options';
 import AddOptions from './AddOptions';
+import Footer from "./Footer";
 
 // STATEFUL Component // Class Based COMPONENT //
 class IndecisionApp extends React.Component
@@ -41,6 +42,10 @@ class IndecisionApp extends React.Component
             };
         } );
     };
+    closeModal = () =>
+    {
+        this.setState( () => ( { answer: '' } ) );
+    };
     componentDidMount ()
     {
         try
@@ -70,12 +75,14 @@ class IndecisionApp extends React.Component
         return (
             <div>
                 <Header
-                    title='Binary Decision Maker'
+                    title='Binary Decision Maker' s
                     subtitle='Making Decisions for Indecisive People'
                 />
                 <Action
                     hasOptions={ this.state.options.length > 0 ? true : false }
-                    answer={ this.state.answer } handlePick={ this.handlePick }
+                    answer={ this.state.answer }
+                    handlePick={ this.handlePick }
+                    closeModal={ this.closeModal }
                 />
                 <Options
                     hasOptions={ this.state.options.length > 0 ? true : false }
@@ -87,6 +94,7 @@ class IndecisionApp extends React.Component
                     options={ this.state.options }
                     handleAddOption={ this.handleAddOption }
                 />
+                <Footer />
             </div>
         );
     }
