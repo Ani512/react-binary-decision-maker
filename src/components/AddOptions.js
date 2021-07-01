@@ -25,8 +25,8 @@ class AddOptions extends React.Component
             <div className="display-option">
                 { this.state.error && <p>{ this.state.error }</p> }
                 <form id="inp" onSubmit={ this.handleAddOption }>
-                    <input type="text" name="options" placeholder="Task"></input>
-                    <button className="options-btn">Add Options</button>
+                    <input className="add-inp" type="text" name="options" placeholder="Task"></input>
+                    <button className="btn options-btn">Add Options</button>
                 </form>
             </div>
         );

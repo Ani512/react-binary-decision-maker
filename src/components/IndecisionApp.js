@@ -11,7 +11,35 @@ class IndecisionApp extends React.Component
 {
     state = {
         options: [],
-        answer: ''
+        answer: '',
+        mode: ''
+    };
+    darkMode = () =>
+    {
+        this.setState( ( prevState ) =>
+        {
+            if ( prevState.mode === '' )
+            {
+                return {
+                    mode: 'c'
+                };
+            } else
+            {
+                return {
+                    mode: ''
+                };
+            }
+        } );
+
+        if ( this.state.mode === '' )
+        {
+            document.querySelector( ".text-toggle" ).textContent = "Dark Mode";
+            document.querySelector( ".body" ).classList.add( "active" );
+        } else
+        {
+            document.querySelector( ".text-toggle" ).textContent = "Light Mode";
+            document.querySelector( ".body" ).classList.remove( "active" );
+        }
     };
     handleDeleteOptions = () =>
     {
@@ -50,8 +78,7 @@ class IndecisionApp extends React.Component
     {
         try
         {
-            let json = localStorage.getItem( 'options' );
-            let options = JSON.parse( json );
+            let options = JSON.parse( localStorage.getItem( 'options' ) );
             if ( options )
             {
                 this.setState( () => ( { options } ) );
@@ -75,8 +102,9 @@ class IndecisionApp extends React.Component
         return (
             <div>
                 <Header
-                    title='Binary Decision Maker' s
+                    title='Binary Decision Maker'
                     subtitle='Making Decisions for Indecisive People'
+                    darkMode={ this.darkMode }
                 />
                 <Action
                     hasOptions={ this.state.options.length > 0 ? true : false }

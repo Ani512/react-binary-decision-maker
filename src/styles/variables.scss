@@ -1,0 +1,15 @@
+$background-color: #DCDCDC;
+$header: #563D7C;
+$valid: green;
+$invalid: #DC3545;
+$dark-background: #20222B;
+
+@function set-modal-bg($color) {
+    @if(lightness($color) > 50) {
+        @return $dark-background;
+    }
+
+    @else {
+        @return $background-color;
+    }
+}
