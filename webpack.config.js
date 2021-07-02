@@ -1,10 +1,13 @@
 const path = require( 'path' );
+const HtmlWebpackPlugin = require( 'html-webpack-plugin' );
 
 module.exports = {
-    mode: 'development',
+    mode: 'production',
+    // Use mode development while changing the application
     entry: './src/index.js',
     output: {
-        path: path.join( __dirname, 'public' ),
+        // Use the path public instead of dist while in development 
+        path: path.join( __dirname, 'dist' ),
         filename: "bundle.js",
     },
     module: {
@@ -26,11 +29,16 @@ module.exports = {
                 use: [ 'style-loader', 'css-loader', 'sass-loader' ],
             } ]
     },
-    devtool: 'eval-cheap-module-source-map',
+    // devtool: 'eval-cheap-module-source-map',
     devServer: {
         contentBase: path.join( __dirname, 'public' ),
         inline: true,
         host: 'localhost',
         port: 8000,
     },
+    plugins: [
+        new HtmlWebpackPlugin( {
+            template: path.resolve( './public/index.html' ),
+        } ),
+    ]
 };
