@@ -14,8 +14,8 @@ const Options = ( props ) =>
             {
                 /*  Calling the Option Component with each option */
                 props.options && props.options.length > 0 ? (
-                    <div className="sen">
-                        <p>Here are the Options - </p>
+                    <div className="option-info">
+                        <p>Options - </p>
                         { props.options.map( option => (
                             <Option
                                 key={ option }

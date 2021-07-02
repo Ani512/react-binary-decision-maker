@@ -6,7 +6,7 @@ const Option = ( props ) =>
 (
     <div className="single-option">
         <p className="inner">{ props.optionText }</p>
-        <button className="btn-inner" onClick={ () =>
+        <button className=" btn btn-inner" onClick={ () =>
         {
             props.handleDeleteSingleOption( props.optionText );
         } }>X</button>

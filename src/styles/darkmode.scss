@@ -10,10 +10,12 @@
 }
 
 .sub-header {
+    float: right;
+
     p {
         display: inline;
-        margin-left: 80%;
         font-size: 18px;
+        text-align: center;
     }
 }
 
@@ -22,7 +24,7 @@
     display: inline-block;
     width: 60px;
     height: 34px;
-    margin-left: 1%;
+    margin-left: 10%;
 
     input {
         opacity: 0;
